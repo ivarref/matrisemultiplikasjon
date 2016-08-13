@@ -1,0 +1,791 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{comment}
+\usepackage[table]{xcolor}
+
+\newcommand\x{\times}
+\newcommand\y{\cellcolor{blue!20}}
+\newcommand\z{\cellcolor{red!20}}
+
+\begin{document}
+\section*{Matrisemultiplikasjon for nybyrjarar}
+
+Matriser kan vera litt vrient i byrjinga.
+Men det er ikkje så ille når ein fyrst forstår kva det går i.
+
+Eg skal prøve å gje ein liten og \emph{forhåpentlegvis}
+forståeleg intro\-duksjon til matriser og multiplikasjon av dei.
+
+\subsection*{Matriser}
+
+Kva er ei matrise? Det enklaste er å gje eit eksempel:
+
+\begin{equation*}
+X = \begin{bmatrix}
+1 & 2 & 3 & 4 \\
+5 & 6 & 7 & 8 \\
+9 & 10 & 11 & 12
+\end{bmatrix}
+\end{equation*}
+Her har me ei $3 \x 4$ matrise. 
+Den består altså av 3 rader (``y-aksen'') og 4 kolonner (``x-aksen'').
+
+Berre for å gjera det litt meir tydelig:
+\begin{equation*}
+\left[\begin{array}{cccc}
+1 & 2 & 3 & 4 \\
+\rowcolor{blue!20} 5 & 6 & 7 & 8 \\
+9 & 10 & 11 & 12
+\end{array}\right]
+\end{equation*}
+Her er \emph{rad} nummer 2 merka av i blått. Og motsvarande:
+\begin{equation*}
+\left[\begin{array}{cccc}
+1 & 2 & \cellcolor{red!20} 3 & 4 \\
+5 & 6 & \cellcolor{red!20} 7 & 8 \\
+9 & 10 & \cellcolor{red!20} 11 & 12
+\end{array}\right]
+\end{equation*}
+I matrisa over er \emph{kolonne} nummer 3 merka av i raudt.
+
+Når ein referer element inne i matrisa, så nyttar ein fyrst rad og så kolonne.
+Dette skriv ein som $X^{(rad)}_{kolonne}$.
+Så f.eks. $X^{(2)}_1 = 5$.
+
+For dei som har programmert litt kan ein merke seg at både rad og kolonne byrjar
+på 1 (og ikkje på 0, slik det er i mange programmeringsspråk). Dette kan
+variere avhengig av kva miljø du befinn deg i, men Octave er for eksempel 1-basert.
+
+\subsection*{Vektor}
+
+Ein vektor er eit spesialtilfelle av matriser.
+Meir spesifikt er det ei matrise med vilkårlig antall
+rader og nøyaktig ei kolonne. Den er med andre ord rad-basert.
+Eit eksempel:
+\begin{equation*}
+\left[\begin{array}{c}
+1 \\
+2 \\
+3 \\
+4
+\end{array}\right]
+\end{equation*}
+Dette kaller ein ein 4-dimensjonal vektor,
+ein vektor med fire dimensjonar eller eventuelt ei $4 \x 1$ matrise.
+
+\subsection*{Kolonnevektor}
+
+Som du kanskje kan gjette deg til, så er dette det samme som ein vektor,
+men den går ``andre vegen''. Dvs. det er ei matrise med nøyaktig ei rad
+og vilkårlig antall kolonner. For eksempel:
+
+\begin{equation*}
+\left[\begin{array}{cccc}
+1 & 2 & 3 & 4
+\end{array}\right]
+\end{equation*}
+
+Dette er altså ein kolonnevektor, 
+column based vector eller
+berre column vector på engelsk.
+
+\subsection*{Transpose}
+
+Korleis kan ein gå mellom ein vanlig vektor og ein kolonnevektor?
+Jo, ein kunne sjølvsagt skrive ein for loop for det, men ein har
+ein matriseoperasjon for det. Transpose heiter den, og det skrives
+på følgande måte:
+
+\begin{equation*}
+X = \left[\begin{array}{cccc}
+1 \\
+2 \\
+3 \\
+4
+\end{array}\right]\text{, }
+X^T = \left[\begin{array}{cccc}
+1 & 2 & 3 & 4\\
+\end{array}\right]
+\end{equation*}
+Skrivemåten er altså $X^T$ for å snu eller transpose matrisa $X$.
+Om ein gjer to transpose så kjem ein tilbake til utgangspunktet, dvs.
+$\left(X^T\right)^T = X$.
+
+Transpose kan ein gjera på alle typer matriser, ikkje berre vektorer eller
+kolonnevektorer, eksempelvis: 
+
+\begin{equation*}
+\left[\begin{array}{cccc}
+\rowcolor{red!20}1 & 2 & 3 & 4 \\
+5 & 6 & 7 & 8 \\
+\rowcolor{blue!20}
+9 & 10 & 11 & 12
+\end{array}\right]^T = 
+\left[\begin{array}{cccc}
+\cellcolor{red!20}1 & 5 & \cellcolor{blue!20} 9 \\
+\cellcolor{red!20}2 & 6 & \cellcolor{blue!20} 10 \\
+\cellcolor{red!20}3 & 7 & \cellcolor{blue!20} 11 \\
+\cellcolor{red!20}4 & 8 & \cellcolor{blue!20} 12
+\end{array}\right]
+\end{equation*}
+
+Her kan du forhåpentlegvis sjå at rader har blitt til kolonner (``snudd 90 grader'').
+Det som skjer litt meir formelt er at rad- og 
+  kolonneplassering for kvart element byttar plass.
+
+\subsubsection*{Addisjon og subtraksjon}
+
+Dette er dei enklaste operasjonane ein kan gjere med matriser.
+Det krever at begge matrisene har samme dimensjonar, og så er det eigentleg
+berre å gjera addisjon eller subtraksjon element for element.
+For eksempel:
+
+\begin{equation*}
+\left[\begin{array}{cccc}
+2 & 3 \\
+4 & 5 
+\end{array}\right] + 
+\left[\begin{array}{cccc}
+6 & 7 \\ 8 & 9
+\end{array}\right] =
+\left[\begin{array}{cccc}
+(2+6) & (3 + 7) \\
+(4+8) & (5 + 9)
+\end{array}\right] =
+\left[\begin{array}{cccc}
+8 & 10 \\
+12 & 14
+\end{array}\right]
+\end{equation*}
+
+Verre var det ikkje. Gankse rett fram.
+Det er samme logikk for subtraksjon.
+
+\subsection*{Matrise-vektor multiplikasjon}
+
+Då er det på tide å byrje å gange saman nokon tall.
+Og summere i samme sleng. Dette kallar ein matrisemultiplikasjon.
+%og matrimultiplikasjon meir generelt, gjer: Ganger saman tall og summerer dei.
+Rekkefølgen på operandane spelar ei rolle. Det vil seie at
+$A \x B \neq B \x A$, der $A$ og $B$ er matriser.
+
+Vi byrjar med den enklaste forma. Matrise-vektor multiplikasjon og
+setter:
+%La oss igjen ta eit eksempel:
+
+\begin{gather*}
+A = \left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \text{ , } B = 
+\left[ 
+\begin{array}{ccc}
+7 \\
+8 \\
+9
+\end{array}
+\right]
+\end{gather*}
+Kva vert $A \x B$?
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+7 \\
+8 \\
+9
+\end{array}
+\right] =\text{ ?}
+\end{gather*}
+
+Behold. Ein matrise-vektor multiplikasjon. Men veldig vanskelig er det ikkje.
+%Det fyrste ein gjer --- \emph{mentalt} vel å merke --- er å snu eller transpose den andre matrisa slik at ein får følgande uttrykk:
+
+\begin{comment}
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+7 & 8 & 9
+\end{array}
+\right] =\text{ ?}
+\end{gather*}
+\end{comment}
+
+Svar-matrisa, altså resultatet av multipliseringa, har antall rader lik
+$A$ og antall kolonner lik $B$. Så no har ein altså
+følgande form:
+
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+7 \\ 8 \\ 9
+\end{array}
+\right] =
+\left[ 
+\begin{array}{ccc}
+? \\ ?
+\end{array}
+\right]
+\end{gather*}
+
+Om eg så seier at ``$?$'' skal vera summen av produktet for kvar rad, 
+kan du gjette kva det vert? Vel, det vert altså som følgande for rad 1:
+
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+\rowcolor{blue!20}1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+\cellcolor{blue!20}7 \\ 
+\cellcolor{blue!20} 8 \\ 
+\cellcolor{blue!20} 9
+\end{array}
+\right] =
+\left[ 
+\begin{array}{ccc}
+\rowcolor{blue!20}(1*7) + (2*8) + (3*9) \\
+? \\
+%?
+%(4*7) + (5*8) + (6*9) \\
+\end{array}
+\right]
+\end{gather*}
+Og tilsvarande for rad nummer to:
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+\rowcolor{red!20}
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+\cellcolor{red!20}7 \\ 
+\cellcolor{red!20} 8 \\ 
+\cellcolor{red!20} 9
+\end{array}
+\right] =
+\left[ 
+\begin{array}{ccc}
+(1*7) + (2*8) + (3*9) \\
+\rowcolor{red!20}
+(4*7) + (5*8) + (6*9) \\
+\end{array}
+\right]
+\end{gather*}
+Så det som skjer her er at ein berre ganger inn kolonna i $B$ med elementa i kvar
+rad i $A$, og så summerer dei opp.
+
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+7 \\ 8 \\ 9
+\end{array}
+\right] =
+\left[ 
+\begin{array}{ccc}
+7 + 16 + 27 \\
+28 + 40 + 54 \\
+\end{array}
+\right] =
+\left[ 
+\begin{array}{ccc}
+50 \\
+122 \\
+\end{array}
+\right]
+\end{gather*}
+
+Det var ikkje veldig vanskelig, var det vel?
+Vel. Litt vanskelig var det kanskje. 
+Ville det ikkje vore litt enklare å skrive $B$ som $\left[ \begin{array}{ccc}7 &
+                                                                                 8
+                                                                                 &
+                                                                                   9
+\end{array}\right]$? Slik at ein hadde fått følgande:
+
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+7 & 8 & 9
+\end{array}
+\right] =
+\left[ 
+\begin{array}{ccc}
+(1*7) + (2*8) + (3*9) \\
+(4*7) + (5*8) + (6*9) \\
+\end{array}
+\right]
+\text{\color{red} NB: Hypotetisk!}
+\end{gather*}
+Då er det litt enklare å sjå for seg korleis ganginga og summeringa 
+kjem til å verta gjort, 
+er det ikkje? Då berre ganger ein inn rad mot rad i operandane.
+Du er neppe åleine om å kunne ynskje deg dette.
+Og dette kan ein få til med transpose. Då er det berre å ta transpose på
+den andre operanden:
+
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+7 & 8 & 9
+\end{array}
+\right]^T =
+\left[ 
+\begin{array}{ccc}
+(1*7) + (2*8) + (3*9) \\
+(4*7) + (5*8) + (6*9) \\
+\end{array}
+\right]
+\end{gather*}
+Det er unektelig litt enklare å kunne jobbe med $A$ og $B$
+som har likt antall kolonner og berre sjå for seg at rad for rad i $A$ vert
+ganga inn med rad for rad i $B$. Dette oppnår ein altså med å bruke $A \x B^T$.
+Ganske kult\footnote{Kult nok iallefall.}, eller kva?
+
+\subsection*{Matrise-matrise multiplikasjon}
+
+Så no kan du forhåpentlegvis matrise-vektor multiplikasjon.
+Kva med matrise-matrise multiplikasjon? Altså:
+
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+7 & 10 \\
+8 & 11 \\
+9 & 12 \\
+\end{array}\right]
+= \text{ ?}
+\end{gather*}
+Som før har ein at svar-matrisa har likt antall rader som fyrste operand, 
+og likt antall kolonner som andre operand.
+
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+7 & 10 \\
+8 & 11 \\
+9 & 12 \\
+\end{array}\right]
+= 
+\left[ 
+\begin{array}{ccc}
+? & ? \\
+? & ? \\
+\end{array}\right]
+\end{gather*}
+Frå før veit me at me har som følgande
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+\rowcolor{blue!20}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+\cellcolor{blue!20}7 & 10 \\
+\cellcolor{blue!20}8 & 11 \\
+\cellcolor{blue!20}9 & 12 \\
+\end{array}\right]
+= 
+\left[ 
+\begin{array}{ccc}
+\cellcolor{blue!20}50 & ? \\
+? & ? \\
+\end{array}\right]
+\end{gather*}
+og
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+\rowcolor{red!20}
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+\cellcolor{red!20}7 & 10 \\
+\cellcolor{red!20}8 & 11 \\
+\cellcolor{red!20}9 & 12 \\
+\end{array}\right]
+= 
+\left[ 
+\begin{array}{ccc}
+50 & ? \\
+\cellcolor{red!20}
+122 & ? \\
+\end{array}\right]
+\end{gather*}
+
+Kan du klare å gjette deg til kva spørsmålteikna vert?
+Ikkje? Ta deg ein luftepause på fem minutt.
+
+Det vert altså som følgande
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+\rowcolor{blue!20}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+7 & \y 10 \\
+8 & \y 11 \\
+9 & \y 12 \\
+\end{array}\right]
+= 
+\left[ 
+\begin{array}{ccc}
+50 & \y (1*10) + (2*11) + (3*12) \\
+122 & ? \\
+\end{array}\right]
+\end{gather*}
+Og tilsvarande får ein
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+\rowcolor{red!20}
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+7 & \z 10 \\
+8 & \z 11 \\
+9 & \z 12 \\
+\end{array}\right]
+= 
+\left[ 
+\begin{array}{ccc}
+50 & (1*10) + (2*11) + (3*12) \\
+122 & \z (4*10) + (5*11) + (6*12) \\
+\end{array}\right]
+\end{gather*}
+Som igjen vert
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+7 & 10 \\
+8 & 11 \\
+9 & 12 \\
+\end{array}\right]
+= 
+\left[ 
+\begin{array}{ccc}
+50 & 68 \\
+122 & 167 \\
+\end{array}\right]
+\end{gather*}
+
+Om ein igjen ynskjer å arbeide med ei transposed utgåve av dette, så får ein
+\begin{gather*}
+\left[ 
+\begin{array}{ccc}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{array}
+ \right] \x
+\left[ 
+\begin{array}{ccc}
+7 & 8 & 9\\
+10 & 11 & 12
+\end{array}\right]^T
+= 
+\left[ 
+\begin{array}{ccc}
+50 & 68 \\
+122 & 167 \\
+\end{array}\right]
+\end{gather*}
+Og her kan det vera verdt å leggje merke til at svar-matrisa veks med ei
+kolonne for kvar rad som vert lagt til i den andre operanden som 
+vert snudd eller transposed.
+
+Så dette var eit forsøk på å gje ein uformell, intuitiv kjensle med
+korleis ein gjer matrise-matrise multiplikasjon. Særlig vil eg anbefale
+å tenke på at begge operander kan ha like mange kolonner, men at ein då
+lyt gjere transpose på den andre operanden før ein ganger dei saman.
+
+Lukke til med multipliseringa.
+
+-- \emph{Ivar Refsdal}. refsdal.ivar@gmail.com
+
+
+\begin{comment}
+\begin{gather*}
+\begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix} * \begin{bmatrix}2\end{bmatrix} = 
+\begin{bmatrix}1*2 \\ 2*2 \\ 3*2\end{bmatrix} =
+\begin{bmatrix}2 \\ 4 \\ 6\end{bmatrix}
+\end{gather*}
+Som du kanskje har lagt merke til, så er det ingen summering heilt enno.
+Men det kjem. Det kjem.
+
+Her hadde ein altså ei matrise $3\times{}1$ som skal gangast med ei $1\times{}1$
+matrise. Det er i praksis scalar multiplikasjon, altså at ein berre ganger inn
+eit tall i kvart element. Kva om det hadde vore andre vegen? $B * A$?
+
+\begin{gather*}
+\begin{bmatrix}2\end{bmatrix} *
+\begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix} = \text{\color{red}Feil!}
+\end{gather*}
+Kvifor er det feil? Jo, fordi det er følgande krav til matrisene i ein
+gangeoperasjon:
+Antall kolonner i venstre matrise må vera lik antall rader i høgre matrise.
+Meir spesifikt så tillater ein berre multiplikasjon av matriser som har
+formen $(m\times{}n) * (n\times{}c)$. Og for dette eksempelet som vart feil
+så hadde ein altså $(1\times{}\emph{1}) * (\emph{3}\times{}1)$, og sidan 
+$1 \neq{} 3$ så kan ein ikkje gjennomføre multiplikasjonen.
+
+Rader og kolonner. Det har eg ikkje eingong nevnt, 
+og det går unektelig ofte litt i surr for meg sjølv. 
+Kva er kva?
+
+%\begin{figure*}
+\begin{equation*}
+  \text{To rader:}
+  \left[\begin{array}{cccc}
+    \rowcolor{red!20}
+    \x  & \x  & \x & \x \\
+    0   & \x  & \x & \x \\
+    \rowcolor{blue!20}
+    0   & 0   & \x & \x \\
+    0   & 0   & 0  & \x \\
+    a  &  b  & c &  d\\
+  \end{array}\right]
+  \text{og to kolonner: }
+  \left[\begin{array}{cccc}
+    \y \x  & \x  & \cellcolor{red!20} \x & \x \\
+    \y 0   & \x  & \cellcolor{red!20} \x & \x \\
+    \y 0   & 0   & \cellcolor{red!20} \x & \x \\
+    \y 0   & 0   & \cellcolor{red!20} 0  & \x \\
+    \y a  &  b  & \cellcolor{red!20} c &  d\\
+  \end{array}\right]
+\end{equation*}
+%\caption{To kolonner markert}
+%\end{figure*}
+
+\subsection*{Matrisemultiplikasjon}
+
+Okay, så gitt ein har følgande matrise:
+
+\begin{gather*}
+X = 
+\begin{bmatrix}
+x_1^{(1)} & x_2^{(1)} & x_3^{(1)} & x_4^{(1)} \\
+x_1^{(2)} & x_2^{(2)} & x_3^{(2)} & x_4^{(2)} \\
+x_1^{(3)} & x_2^{(3)} & x_3^{(3)} & x_4^{(3)}
+\end{bmatrix}
+\end{gather*}
+
+Då er altså $X$ ei $3 \x 4$ matrise. Og då lyt den andre matrisa
+vera $4 \x \emph{\text{something}}$.
+La oss setje den til å vera $4 \x 1$:
+
+\begin{gather*}
+Y = 
+\begin{bmatrix}
+y_1^{(1)} \\
+y_1^{(2)} \\
+y_1^{(3)} \\
+y_1^{(4)}
+\end{bmatrix}
+\end{gather*}
+Kva vert så $X * Y$? Det vert intet mindre enn følgande:
+
+\begin{gather*}
+\begin{bmatrix}
+x_1^{(1)} & x_2^{(1)} & x_3^{(1)} & x_4^{(1)} \\
+x_1^{(2)} & x_2^{(2)} & x_3^{(2)} & x_4^{(2)} \\
+x_1^{(3)} & x_2^{(3)} & x_3^{(3)} & x_4^{(3)}
+\end{bmatrix} * 
+\begin{bmatrix}
+y_1^{(1)} \\
+y_1^{(2)} \\
+y_1^{(3)} \\
+y_1^{(4)}
+\end{bmatrix} = 
+\begin{bmatrix}
+x_1^{(1)}y_1^{(1)} +
+x_2^{(1)}y_1^{(2)} +
+x_3^{(1)}y_1^{(3)} +
+x_4^{(1)}y_1^{(4)} \\
+x_1^{(2)}y_1^{(1)} +
+x_2^{(2)}y_1^{(2)} +
+x_3^{(2)}y_1^{(3)} +
+x_4^{(2)}y_1^{(4)} \\
+x_1^{(3)}y_1^{(1)} +
+x_2^{(3)}y_1^{(2)} +
+x_3^{(3)}y_1^{(3)} +
+x_4^{(3)}y_1^{(4)}
+\end{bmatrix}
+\end{gather*}
+Det som eg pleier å gjera er å sjå for meg følgande:
+
+\begin{equation*}
+\left[\begin{array}{cccc}
+\rowcolor{red!20}x_1^{(1)} & x_2^{(1)} & x_3^{(1)} & x_4^{(1)} \\
+x_1^{(2)} & x_2^{(2)} & x_3^{(2)} & x_4^{(2)} \\
+x_1^{(3)} & x_2^{(3)} & x_3^{(3)} & x_4^{(3)}
+\end{array}\right] * 
+\left[\begin{array}{cccc}
+\rowcolor{blue!10}
+y_1^{(1)} & y_1^{(2)} & y_1^{(3)} & y_1^{(4)}
+\end{array}\right] =
+\left[\begin{array}{cccc}
+\rowcolor{green!20}
+x_1^{(1)}y_1^{(1)} +
+x_2^{(1)}y_1^{(2)} +
+x_3^{(1)}y_1^{(3)} +
+x_4^{(1)}y_1^{(4)} 
+\end{array}\right]
+\end{equation*}
+Merk at dette er berre noko eg ser for meg. Men her er altså Y ``snudd''
+eller ``transposed'' på engelsk.
+Og når ein har gjort det, så er det berre å gange inn kvart element med
+kvarandre
+og summere dei opp. Ein ganger altså rada i X med ei kolonne i Y, og
+tek summen av dette. Slik gjer ein for alle radene.
+
+\begin{equation*}
+\left[\begin{array}{cccc}
+x_1^{(1)} & x_2^{(1)} & x_3^{(1)} & x_4^{(1)} \\
+\rowcolor{red!20}
+x_1^{(2)} & x_2^{(2)} & x_3^{(2)} & x_4^{(2)} \\
+x_1^{(3)} & x_2^{(3)} & x_3^{(3)} & x_4^{(3)}
+\end{array}\right] * 
+\left[\begin{array}{cccc}
+\rowcolor{blue!10}
+y_1^{(1)} & y_1^{(2)} & y_1^{(3)} & y_1^{(4)}
+\end{array}\right] =
+\left[\begin{array}{cccc}
+x_1^{(1)}y_1^{(1)} +
+x_2^{(1)}y_1^{(2)} +
+x_3^{(1)}y_1^{(3)} +
+x_4^{(1)}y_1^{(4)} \\
+\rowcolor{green!20}
+x_1^{(2)}y_1^{(1)} +
+x_2^{(2)}y_1^{(2)} +
+x_3^{(2)}y_1^{(3)} +
+x_4^{(2)}y_1^{(4)} \\
+\end{array}\right]
+\end{equation*}
+Og for den siste rada i X:
+
+\begin{equation*}
+\left[\begin{array}{cccc}
+x_1^{(1)} & x_2^{(1)} & x_3^{(1)} & x_4^{(1)} \\
+x_1^{(2)} & x_2^{(2)} & x_3^{(2)} & x_4^{(2)} \\
+\rowcolor{red!20}
+x_1^{(3)} & x_2^{(3)} & x_3^{(3)} & x_4^{(3)}
+\end{array}\right] * 
+\left[\begin{array}{cccc}
+\rowcolor{blue!10}
+y_1^{(1)} & y_1^{(2)} & y_1^{(3)} & y_1^{(4)}
+\end{array}\right] =
+\left[\begin{array}{cccc}
+x_1^{(1)}y_1^{(1)} +
+x_2^{(1)}y_1^{(2)} +
+x_3^{(1)}y_1^{(3)} +
+x_4^{(1)}y_1^{(4)} \\
+x_1^{(2)}y_1^{(1)} +
+x_2^{(2)}y_1^{(2)} +
+x_3^{(2)}y_1^{(3)} +
+x_4^{(2)}y_1^{(4)} \\
+\rowcolor{green!20}
+x_1^{(3)}y_1^{(1)} +
+x_2^{(3)}y_1^{(2)} +
+x_3^{(3)}y_1^{(3)} +
+x_4^{(3)}y_1^{(4)} \\
+\end{array}\right]
+\end{equation*}
+
+Merk at $x_1^{(1)}y_1^{(1)} + x_2^{(1)}y_1^{(2)} + x_3^{(1)}y_1^{(3)} +
+x_4^{(1)}y_1^{(4)}$ let seg redusere til eitt tall. Slik sett kan ein
+skrive resultatmatrisa på følgande måte:
+
+\begin{equation*}
+\left[\begin{array}{cccc}
+        \sum_{i=1}^{n}{x_n^{(1)}y_1^{(n)}} \\
+        \sum_{i=1}^{n}{x_n^{(2)}y_1^{(n)}} \\
+        \sum_{i=1}^{n}{x_n^{(3)}y_1^{(n)}} \\
+\end{array}\right]
+\end{equation*}
+Merk då at ein krever $m \x n$ og $n \x k$ for henholdsvis venstre og høgre matrise.
+Merk også at Y-vektoren er gjort om til ein kolonnevektor --- og at dette berre
+er for å gjera det enklare å sjå for seg korleis multiplikasjonen og summering 
+vert gjort.
+\end{comment}
+
+
+
+
+\end{document}
